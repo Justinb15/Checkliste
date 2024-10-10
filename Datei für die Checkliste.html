@@ -51,7 +51,8 @@
     <p><strong>Datum:</strong> <input type="date" id="signdate2"></p>
 </div>
 
-<button onclick="sendForm()">Absenden</button>
+<button type="button" onclick="sendForm()">Absenden</button>
+
 
 <script>
 function sendForm() {
@@ -79,7 +80,7 @@ function sendForm() {
         signdate2: document.getElementById('signdate2').value
     };
 
- fetch('http://127.0.0.1:5000/submit', {
+ fetch('http://127.0.0.1:8000/submit', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
