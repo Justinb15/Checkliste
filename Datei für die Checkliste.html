@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkliste zur Arbeitsplatz & Anlageneinrichtung</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .checklist-section { margin-bottom: 20px; }
+        .signature { margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<h2>Checkliste zur Arbeitsplatz-/ Anlageneinrichtung</h2>
+<p><strong>Anlage:</strong> <input type="text" id="anlage"></p>
+<p><strong>Datum der Einrichtung:</strong> <input type="date" id="datum"></p>
+<p><strong>Einrichtung durch (Name):</strong> <input type="text" id="name"></p>
+<p><strong>Einrichtung gemäß AA:</strong> <input type="text" id="aa"></p>
+
+<div class="checklist-section">
+    <h3>Allgemeine Einrichtung:</h3>
+    <label><input type="checkbox" id="task1"> Arbeitsplatz vollständig gerüstet</label><br>
+    <label><input type="checkbox" id="task2"> Richtige Vorrichtung installiert</label><br>
+    <label><input type="checkbox" id="task3"> Werkzeug und Materialien bereitgestellt</label>
+</div>
+
+<div class="checklist-section">
+    <h3>Schraubsystem & Steuerung (falls vorhanden):</h3>
+    <label><input type="checkbox" id="task4"> Programm für Schraubsystem/Laseranlage/EoL geladen/geändert</label><br>
+    <label><input type="checkbox" id="task5"> SPS-Steuerung angepasst/aktualisiert</label><br>
+    <label><input type="checkbox" id="task6"> Pneumatische Systeme (Druckluft) eingestellt</label>
+</div>
+
+<!-- Weitere Abschnitte analog hinzufügen -->
+
+<div class="checklist-section">
+    <h3>Testlauf & Abschluss:</h3>
+    <label><input type="checkbox" id="task12"> Testlauf erfolgreich durchgeführt</label><br>
+    <label><input type="checkbox" id="task13"> Systemüberprüfung durch Zweitprüfer abgeschlossen</label><br>
+    <label><input type="checkbox" id="task14"> Dokumentation der Änderungen/Programme aktualisiert</label>
+</div>
+
+<h3>Bemerkungen:</h3>
+<textarea id="bemerkungen" rows="4" cols="50"></textarea>
+
+<div class="signature">
+    <p><strong>Unterschrift des Einrichters:</strong> <input type="text" id="signature1"></p>
+    <p><strong>Datum:</strong> <input type="date" id="signdate1"></p>
+    <p><strong>Unterschrift des zweiten Prüfers:</strong> <input type="text" id="signature2"></p>
+    <p><strong>Datum:</strong> <input type="date" id="signdate2"></p>
+</div>
+
+<button onclick="sendForm()">Absenden</button>
+
+<script>
+function sendForm() {
+    const formData = {
+        anlage: document.getElementById('anlage').value,
+        datum: document.getElementById('datum').value,
+        name: document.getElementById('name').value,
+        aa: document.getElementById('aa').value,
+        tasks: {
+            task1: document.getElementById('task1').checked,
+            task2: document.getElementById('task2').checked,
+            task3: document.getElementById('task3').checked,
+            task4: document.getElementById('task4').checked,
+            task5: document.getElementById('task5').checked,
+            task6: document.getElementById('task6').checked,
+            // Füge weitere Tasks hinzu
+            task12: document.getElementById('task12').checked,
+            task13: document.getElementById('task13').checked,
+            task14: document.getElementById('task14').checked,
+        },
+        bemerkungen: document.getElementById('bemerkungen').value,
+        signature1: document.getElementById('signature1').value,
+        signdate1: document.getElementById('signdate1').value,
+        signature2: document.getElementById('signature2').value,
+        signdate2: document.getElementById('signdate2').value
+    };
+
+    fetch('YOUR_INTERNAL_ARCHIVE_URL', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    }).then(response => {
+        if (response.ok) {
+            alert('Checkliste erfolgreich gesendet!');
+        } else {
+            alert('Fehler beim Senden der Checkliste.');
+        }
+    }).catch(error => {
+        alert('Netzwerkfehler: ' + error);
+    });
+}
+</script>
+
+</body>
+</html>
