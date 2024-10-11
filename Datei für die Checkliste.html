@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkliste zur Arbeitsplatz & Anlageneinrichtung</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         .checklist-section { margin-bottom: 20px; }
@@ -32,8 +33,6 @@
     <label><input type="checkbox" id="task6"> Pneumatische Systeme (Druckluft) eingestellt</label>
 </div>
 
-<!-- Weitere Abschnitte analog hinzufügen -->
-
 <div class="checklist-section">
     <h3>Testlauf & Abschluss:</h3>
     <label><input type="checkbox" id="task12"> Testlauf erfolgreich durchgeführt</label><br>
@@ -51,54 +50,73 @@
     <p><strong>Datum:</strong> <input type="date" id="signdate2"></p>
 </div>
 
-<button type="button" onclick="sendForm()">Absenden</button>
-
+<button onclick="downloadPDF()">PDF Herunterladen</button>
 
 <script>
-function sendForm() {
-    const formData = {
-        anlage: document.getElementById('anlage').value,
-        datum: document.getElementById('datum').value,
-        name: document.getElementById('name').value,
-        aa: document.getElementById('aa').value,
-       tasks: {
-    task1: document.getElementById('task1').checked,
-    task2: document.getElementById('task2').checked,
-    task3: document.getElementById('task3').checked,
-    task4: document.getElementById('task4').checked,
-    task5: document.getElementById('task5').checked,
-    task6: document.getElementById('task6').checked,
-    task12: document.getElementById('task12').checked,
-    task13: document.getElementById('task13').checked,
-    task14: document.getElementById('task14').checked,
-},
+// jsPDF importieren
+window.jsPDF = window.jspdf.jsPDF;
 
-        bemerkungen: document.getElementById('bemerkungen').value,
-        signature1: document.getElementById('signature1').value,
-        signdate1: document.getElementById('signdate1').value,
-        signature2: document.getElementById('signature2').value,
-        signdate2: document.getElementById('signdate2').value
-    };
+function downloadPDF() {
+    // PDF-Objekt erstellen
+    const doc = new jsPDF();
 
- fetch('http://127.0.0.1:8000/submit', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(formData)
-})
-.then(response => {
-    if (!response.ok) {
-        throw new Error('Netzwerkantwort war nicht ok');
-    }
-    return response.json();
-})
-.then(data => alert(data.message))
-.catch(error => console.error('Fehler beim Senden:', error));
+    // Daten aus dem Formular sammeln
+    const anlage = document.getElementById('anlage').value;
+    const datum = document.getElementById('datum').value;
+    const name = document.getElementById('name').value;
+    const aa = document.getElementById('aa').value;
 
+    // Checkboxen
+    const task1 = document.getElementById('task1').checked ? "Ja" : "Nein";
+    const task2 = document.getElementById('task2').checked ? "Ja" : "Nein";
+    const task3 = document.getElementById('task3').checked ? "Ja" : "Nein";
+    const task4 = document.getElementById('task4').checked ? "Ja" : "Nein";
+    const task5 = document.getElementById('task5').checked ? "Ja" : "Nein";
+    const task6 = document.getElementById('task6').checked ? "Ja" : "Nein";
+    const task12 = document.getElementById('task12').checked ? "Ja" : "Nein";
+    const task13 = document.getElementById('task13').checked ? "Ja" : "Nein";
+    const task14 = document.getElementById('task14').checked ? "Ja" : "Nein";
+
+    const bemerkungen = document.getElementById('bemerkungen').value;
+    const signature1 = document.getElementById('signature1').value;
+    const signdate1 = document.getElementById('signdate1').value;
+    const signature2 = document.getElementById('signature2').value;
+    const signdate2 = document.getElementById('signdate2').value;
+
+    // Inhalte in die PDF-Datei einfügen
+    doc.text(20, 20, "Checkliste zur Arbeitsplatz- und Anlageneinrichtung");
+    doc.text(20, 30, `Anlage: ${anlage}`);
+    doc.text(20, 40, `Datum der Einrichtung: ${datum}`);
+    doc.text(20, 50, `Einrichtung durch: ${name}`);
+    doc.text(20, 60, `Einrichtung gemäß AA: ${aa}`);
+    
+    // Aufgaben
+    doc.text(20, 70, `Allgemeine Einrichtung:`);
+    doc.text(20, 80, `Arbeitsplatz vollständig gerüstet: ${task1}`);
+    doc.text(20, 90, `Richtige Vorrichtung installiert: ${task2}`);
+    doc.text(20, 100, `Werkzeug und Materialien bereitgestellt: ${task3}`);
+    
+    doc.text(20, 110, `Schraubsystem & Steuerung:`);
+    doc.text(20, 120, `Programm geladen/geändert: ${task4}`);
+    doc.text(20, 130, `SPS-Steuerung angepasst/aktualisiert: ${task5}`);
+    doc.text(20, 140, `Pneumatische Systeme eingestellt: ${task6}`);
+    
+    doc.text(20, 150, `Testlauf & Abschluss:`);
+    doc.text(20, 160, `Testlauf erfolgreich durchgeführt: ${task12}`);
+    doc.text(20, 170, `Systemüberprüfung durch Zweitprüfer: ${task13}`);
+    doc.text(20, 180, `Dokumentation aktualisiert: ${task14}`);
+
+    // Bemerkungen und Unterschriften
+    doc.text(20, 190, `Bemerkungen: ${bemerkungen}`);
+    doc.text(20, 200, `Unterschrift des Einrichters: ${signature1}`);
+    doc.text(20, 210, `Datum: ${signdate1}`);
+    doc.text(20, 220, `Unterschrift des zweiten Prüfers: ${signature2}`);
+    doc.text(20, 230, `Datum: ${signdate2}`);
+
+    // PDF herunterladen
+    doc.save("checkliste.pdf");
 }
 </script>
-
 
 </body>
 </html>
